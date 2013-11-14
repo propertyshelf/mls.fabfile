@@ -40,6 +40,8 @@ setup(
     install_requires=[
         'setuptools',
         # -*- Extra requirements: -*-
+        'Fabric',
+        'PyChef',
     ],
     entry_points="""
     # -*- Entry points: -*-
