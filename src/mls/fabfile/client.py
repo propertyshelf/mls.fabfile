@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """Manage MLS application client components."""
 
-from fabric.api import task
+from fabric import api
 
 
-@task
+@api.task
 def remove():
     """Remove an existing MLS application client."""
 
 
-@task
+@api.task
 def update():
     """Update the client packages."""
 
 
-@task
+@api.task
 def restart():
     """Restart the application client component."""
