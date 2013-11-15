@@ -10,10 +10,12 @@ def remove():
 
 
 @api.task
+@api.roles('worker')
 def update():
     """Update the client packages."""
 
 
 @api.task
+@api.roles('worker')
 def restart():
     """Restart the application client component."""
