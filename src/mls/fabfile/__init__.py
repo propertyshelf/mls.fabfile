@@ -11,3 +11,11 @@ bootstrap = bootstrap  # PyFlakes
 client = client  # PyFlakes
 database = database  # PyFlakes
 frontend = frontend  # PyFlakes
+
+
+__all__ = [
+    'bootstrap',
+    'client',
+    'database',
+    'frontend',
+]
