@@ -4,6 +4,39 @@
 from chef.fabric import chef_roledefs
 from fabric import api
 
+__all__ = [
+    'development',
+    'production',
+    'staging',
+]
+
+
+def update_roledefs(environment):
+    """Update Fabric's role definitions with our chef based roles.
+
+    :param environment: The chef environment to search for.
+    :type environment: string
+    """
+    roledefs = chef_roledefs(
+        hostname_attr=['ipaddress'],
+        environment=environment,
+    )
+    role_database = api.env.get('role_database', None)
+    if role_database:
+        api.env.roledefs['database'] = roledefs.get(role_database)
+
+    role_frontend = api.env.get('role_frontend')
+    if role_frontend:
+        api.env.roledefs['frontend'] = roledefs.get(role_frontend)
+
+    role_staging = api.env.get('role_staging')
+    if role_staging:
+        api.env.roledefs['staging'] = roledefs.get(role_staging)
+
+    role_worker = api.env.get('role_worker')
+    if role_worker:
+        api.env.roledefs['worker'] = roledefs.get(role_worker)
+
 
 @api.task
 def development():
@@ -18,25 +51,19 @@ def development():
 
     # Set role definitions for vagrant.
     api.env.roledefs = {
-        api.env.get('ROLE_APP', 'mls_app'): ['127.0.0.1:2222', ],
-        api.env.get('ROLE_LBL', 'mls_load'): ['127.0.0.1:2222', ],
-        api.env.get('ROLE_ZEO', 'mls_zeo'): ['127.0.0.1:2222', ],
+        'worker': ['127.0.0.1:2222', ],
+        'frontend': ['127.0.0.1:2222', ],
+        'database': ['127.0.0.1:2222', ],
     }
 
 
 @api.task
 def staging():
     """Work with the staging environment."""
-    api.env.roledefs = chef_roledefs(
-        hostname_attr=['ipaddress'],
-        environment='staging',
-    )
+    update_roledefs('staging')
 
 
 @api.task
 def production():
     """Work with the production environment."""
-    api.env.roledefs = chef_roledefs(
-        hostname_attr=['ipaddress'],
-        environment='production',
-    )
+    update_roledefs('production')
