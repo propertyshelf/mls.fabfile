@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Deploy and manage Propertyshelf MLS applications using Fabric."""
 
 import bootstrap
 import client

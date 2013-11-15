@@ -19,7 +19,7 @@ long_description = (
 setup(
     name='mls.fabfile',
     version=version,
-    description='Fabric commands for working with the Propertyshelf MLS.',
+    description='Deploy and manage Propertyshelf MLS applications using Fabric.',
     long_description=long_description,
     # Get more strings from
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
