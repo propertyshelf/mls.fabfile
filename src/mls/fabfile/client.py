@@ -2,13 +2,20 @@
 """Manage MLS application client components."""
 
 from fabric import api
-from mls.fabfile import utils
+from mls.fabfile import rackspace, utils
+from mls.fabfile.exceptions import err
 
 
 @api.task
 def remove():
     """Remove an existing MLS application client."""
-    raise NotImplementedError
+    role = api.env.get('role_worker')
+    role = role or err('The definition for "role_worker" is missing!')
+    opts = dict(
+        environment='production',
+        role=role,
+    )
+    rackspace.remove(**opts)
 
 
 @api.task

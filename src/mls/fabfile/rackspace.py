@@ -4,6 +4,7 @@
 from chef import autoconfigure
 from chef.search import Search
 from fabric import api
+from fabric.colors import red
 
 
 def create(**params):
@@ -24,6 +25,24 @@ def create(**params):
             '"%(environment)s".' % params)
 
     api.local(COMMAND_CREATE % params)
+
+
+def remove(**params):
+    """Remove an existing server on Rackspace."""
+    COMMAND_LIST = 'knife rackspace server list | grep %s'
+    COMMAND_DELETE = 'knife rackspace server delete %s --purge'
+
+    chef_api = autoconfigure()
+    query = 'role:%(role)s AND chef_environment:%(environment)s' % params
+    nodes = sorted([node.object.name for node in Search('node', query, api=chef_api)])
+
+    print(red('Available nodes:'))
+    print(red(', '.join(nodes)))
+
+    client = api.prompt('Which node should be removed?')
+    result = api.local(COMMAND_LIST % client, capture=True)
+    server_id = result.split()[0]
+    api.local(COMMAND_DELETE % server_id)
 
 
 def next_client_number(**params):
