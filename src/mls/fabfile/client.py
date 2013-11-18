@@ -3,14 +3,14 @@
 
 from fabric import api
 from mls.fabfile import rackspace, utils
-from mls.fabfile.exceptions import err
+from mls.fabfile.exceptions import missing_env
 
 
 @api.task
 def remove():
     """Remove an existing MLS application client."""
     role = api.env.get('role_worker')
-    role = role or err('The definition for "role_worker" is missing!')
+    role = role or missing_env('role_worker')
     opts = dict(
         environment='production',
         role=role,
