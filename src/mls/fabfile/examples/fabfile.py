@@ -23,3 +23,9 @@ api.env.nodename_staging = 'mls-staging'
 api.env.nodename_worker = 'mls-app'
 
 api.env.os_image = '92a28e50-181d-4fc7-a071-567d26fc95f6'
+
+api.env.domain = 'mls-example.com'
+api.env.mls_customizations = ['mlsext.realtorcom', ]
+api.env.mls_policy_enabled = True
+api.env.mls_policy_package = 'mlspolicy.example'
+api.env.mls_policy_package_url = 'git https://github.com/yourname/mlspolicy.example'
