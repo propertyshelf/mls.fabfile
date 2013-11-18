@@ -8,6 +8,7 @@ from mls.fabfile import utils
 @api.task
 def remove():
     """Remove an existing MLS application client."""
+    raise NotImplementedError
 
 
 @api.task
