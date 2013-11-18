@@ -13,7 +13,7 @@ def _mls_config():
         try:
             return node.object['mls']
         except KeyError:
-            return None
+            return {}
 
 
 def backup_dev_packages(folder=None, user=None):
