@@ -3,27 +3,38 @@
 
 from fabric import api
 from mls.fabfile import rackspace
+from mls.fabfile.exceptions import err
 
 
 @api.task
 def database(nodename=None, image=None, flavor=None):
     """Bootstrap a new standalone database server."""
-    name = nodename
-    name = name or api.env.get('nodename_database')
-    name = name or 'mls-zeo'
+    nodename = nodename or api.env.get('nodename_database')
+    nodename = nodename or err(
+        'The definition for "nodename_database" is missing!'
+    )
+
+    image = image or api.env.get('os_image')
+    image = image or err('The definition for "os_image" is missing!')
+
+    flavor = flavor or api.env.get('flavor_database')
+    flavor = flavor or err('The definition for "flavor_database" is missing!')
+
+    role = api.env.get('role_database')
+    role = role or err('The definition for "role_database" is missing!')
 
     runlist = ','.join([
-        'role[%s]' % api.env.role_database or 'mls_zeo',
+        'role[%s]' % role,
         'recipe[propertyshelf::rackspace_backup]',
     ])
 
     opts = dict(
         environment='production',
-        flavor=flavor or api.env.get('flavor_database') or '5',
-        image=image or api.env.get('os_image'),
-        nodename=name,
+        flavor=flavor,
+        image=image,
+        nodename=nodename,
         runlist=runlist,
-        servername=name,
+        servername=nodename,
     )
     rackspace.create(**opts)
 
@@ -31,17 +42,31 @@ def database(nodename=None, image=None, flavor=None):
 @api.task
 def frontend(nodename=None, image=None, flavor=None):
     """Bootstrap a new standalone frontend server."""
-    name = nodename
-    name = name or api.env.get('nodename_frontend')
-    name = name or 'mls-lbl'
+    nodename = nodename or api.env.get('nodename_frontend')
+    nodename = nodename or err(
+        'The definition for "nodename_frontend" is missing!'
+    )
+
+    image = image or api.env.get('os_image')
+    image = image or err('The definition for "os_image" is missing!')
+
+    flavor = flavor or api.env.get('flavor_database')
+    flavor = flavor or err('The definition for "flavor_database" is missing!')
+
+    role = api.env.get('role_frontend')
+    role = role or err('The definition for "role_frontend" is missing!')
+
+    runlist = ','.join([
+        'role[%s]' % role,
+    ])
 
     opts = dict(
         environment='production',
-        flavor=flavor or api.env.get('flavor_frontent') or '2',
-        image=image or api.env.get('os_image'),
-        nodename=name,
-        runlist='role[%s]' % api.env.role_frontend or 'mls_lbl',
-        servername=name,
+        flavor=flavor,
+        image=image,
+        nodename=nodename,
+        runlist=runlist,
+        servername=nodename,
     )
     rackspace.create(**opts)
 
@@ -54,17 +79,31 @@ def worker(nodename=None, image=None, flavor=None):
         rolename=api.env.role_worker,
     )
 
-    name = nodename
-    name = name or api.env.get('nodename_worker') + '-%02d' % number
-    name = name or 'mls-lbl'
+    nodename = nodename or api.env.get('nodename_worker') + '-%02d' % number
+    nodename = nodename or err(
+        'The definition for "nodename_worker" is missing!'
+    )
+
+    image = image or api.env.get('os_image')
+    image = image or err('The definition for "os_image" is missing!')
+
+    flavor = flavor or api.env.get('flavor_worker')
+    flavor = flavor or err('The definition for "flavor_worker" is missing!')
+
+    role = api.env.get('role_worker')
+    role = role or err('The definition for "role_worker" is missing!')
+
+    runlist = ','.join([
+        'role[%s]' % role,
+    ])
 
     opts = dict(
         environment='production',
-        flavor=flavor or api.env.get('flavor_worker') or '2',
-        image=image or api.env.get('os_image'),
-        nodename=name,
-        runlist='role[%s]' % api.env.role_worker or 'mls_app',
-        servername=name,
+        flavor=flavor,
+        image=image,
+        nodename=nodename,
+        runlist=runlist,
+        servername=nodename,
     )
     rackspace.create(**opts)
 
@@ -72,24 +111,38 @@ def worker(nodename=None, image=None, flavor=None):
 @api.task
 def bundle_db_fe_app(nodename=None, image=None, flavor=None):
     """Bootstrap a new MLS bundle: Database, Frontend, App Worker."""
-    name = nodename
-    name = name or api.env.get('nodename_database')
-    name = name or 'mls-zeo'
+    nodename = nodename or api.env.get('nodename_database')
+    nodename = nodename or err(
+        'The definition for "nodename_database" is missing!'
+    )
+
+    image = image or api.env.get('os_image')
+    image = image or err('The definition for "os_image" is missing!')
+
+    flavor = flavor or api.env.get('flavor_database')
+    flavor = flavor or err('The definition for "flavor_database" is missing!')
+
+    role_database = api.env.get('role_database')
+    role_database = role_database or err('The definition for "role_database" is missing!')
+    role_frontend = api.env.get('role_frontend')
+    role_frontend = role_frontend or err('The definition for "role_frontend" is missing!')
+    role_worker = api.env.get('role_worker')
+    role_worker = role_worker or err('The definition for "role_worker" is missing!')
 
     runlist = ','.join([
-        'role[%s]' % api.env.role_database or 'mls_zeo',
-        'role[%s]' % api.env.role_frontend or 'mls_lbl',
-        'role[%s]' % api.env.role_worker or 'mls_app',
+        'role[%s]' % role_database,
+        'role[%s]' % role_frontend,
+        'role[%s]' % role_worker,
         'recipe[propertyshelf::rackspace_backup]',
     ])
 
     opts = dict(
         environment='production',
-        flavor=flavor or api.env.get('flavor_database') or '5',
-        image=image or api.env.get('os_image'),
-        nodename=name,
+        flavor=flavor,
+        image=image,
+        nodename=nodename,
         runlist=runlist,
-        servername=name,
+        servername=nodename,
     )
     rackspace.create(**opts)
 
@@ -97,16 +150,30 @@ def bundle_db_fe_app(nodename=None, image=None, flavor=None):
 @api.task
 def staging(nodename=None, image=None, flavor=None):
     """Bootstrap a staging system."""
-    name = nodename
-    name = name or api.env.get('nodename_staging')
-    name = name or 'mls-staging'
+    nodename = nodename or api.env.get('nodename_staging')
+    nodename = nodename or err(
+        'The definition for "nodename_staging" is missing!'
+    )
+
+    image = image or api.env.get('os_image')
+    image = image or err('The definition for "os_image" is missing!')
+
+    flavor = flavor or api.env.get('flavor_database')
+    flavor = flavor or err('The definition for "flavor_database" is missing!')
+
+    role = api.env.get('role_staging')
+    role = role or err('The definition for "role_staging" is missing!')
+
+    runlist = ','.join([
+        'role[%s]' % role,
+    ])
 
     opts = dict(
         environment='staging',
-        flavor=flavor or api.env.get('flavor_staging') or '2',
-        image=image or api.env.get('os_image'),
-        nodename=name,
-        runlist='role[%s]' % api.env.role_staging or 'mls_staging',
-        servername=name,
+        flavor=flavor,
+        image=image,
+        nodename=nodename,
+        runlist=runlist,
+        servername=nodename,
     )
     rackspace.create(**opts)
