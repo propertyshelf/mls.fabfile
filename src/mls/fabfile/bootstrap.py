@@ -70,14 +70,8 @@ def worker(nodename=None, image=None, flavor=None):
 
 
 @api.task
-def base(nodename=None, image=None, flavor=None):
-    """Bootstrap a new MLS base system.
-
-    The base system contains:
-    - Frontend server components
-    - Application clients
-    - Database server components.
-    """
+def bundle_db_fe_app(nodename=None, image=None, flavor=None):
+    """Bootstrap a new MLS bundle: Database, Frontend, App Worker."""
     name = nodename
     name = name or api.env.get('nodename_database')
     name = name or 'mls-zeo'
