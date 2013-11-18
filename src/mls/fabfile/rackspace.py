@@ -9,13 +9,15 @@ from fabric.colors import red
 
 def create(**params):
     """Create a new server on Rackspace."""
-    COMMAND_CREATE = 'knife rackspace server create ' \
-                     '-S %(servername)s ' \
-                     '-N %(nodename)s ' \
-                     '-f %(flavor)s ' \
-                     '-I %(image)s ' \
-                     '-r role[rackspace],%(runlist)s ' \
-                     '-E %(environment)s'
+    COMMAND_CREATE = ' '.join([
+        'knife rackspace server create',
+        '-S %(servername)s',
+        '-N %(nodename)s',
+        '-f %(flavor)s',
+        '-I %(image)s',
+        '-r role[rackspace],%(runlist)s',
+        '-E %(environment)s',
+    ])
 
     chef_api = autoconfigure()
     query = 'name:%(nodename)s AND chef_environment:%(environment)s' % params
