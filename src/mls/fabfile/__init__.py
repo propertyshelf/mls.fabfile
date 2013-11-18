@@ -5,12 +5,14 @@ import bootstrap
 import client
 import database
 import frontend
+import roles
 
 
 bootstrap = bootstrap  # PyFlakes
 client = client  # PyFlakes
 database = database  # PyFlakes
 frontend = frontend  # PyFlakes
+roles = roles
 
 
 __all__ = [
@@ -18,4 +20,5 @@ __all__ = [
     'client',
     'database',
     'frontend',
+    'roles',
 ]
