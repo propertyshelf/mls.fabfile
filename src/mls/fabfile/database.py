@@ -6,6 +6,7 @@ from fabric import api
 from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
 from mls.fabfile import utils
+from mls.fabfile.exceptions import err
 
 
 @api.task
