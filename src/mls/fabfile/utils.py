@@ -6,7 +6,7 @@ from fabric import api
 from mls.fabfile.exceptions import err
 
 
-def _mls_config():
+def mls_config():
     """Get the MLS user for the current node."""
     chef_api = autoconfigure()
     for node in Search('node', 'ipaddress:%s' % api.env.host, api=chef_api):
@@ -18,7 +18,7 @@ def _mls_config():
 
 def backup_dev_packages(folder=None, user=None):
     """Backup the development packages."""
-    config = _mls_config()
+    config = mls_config()
     folder = folder or config.get('app', {}).get('dir') or err('Folder must be set!')
     user = user or config.get('user') or err('MLS user must be set!')
     with api.settings(sudo_user=user):
@@ -32,7 +32,7 @@ def backup_dev_packages(folder=None, user=None):
 
 def update_dev_packes(folder=None, user=None):
     """Update the development packages."""
-    config = _mls_config()
+    config = mls_config()
     folder = folder or config.get('app', {}).get('dir') or err('Folder must be set!')
     user = user or config.get('user') or err('MLS user must be set!')
     with api.settings(sudo_user=user):
@@ -43,7 +43,7 @@ def update_dev_packes(folder=None, user=None):
 
 def run_buildout(folder=None, user=None):
     """Run the buildout."""
-    config = _mls_config()
+    config = mls_config()
     folder = folder or config.get('app', {}).get('dir') or err('Folder must be set!')
     user = user or config.get('user') or err('MLS user must be set!')
     with api.settings(sudo_user=user):
