@@ -13,7 +13,7 @@ from mls.fabfile.exceptions import err
 @api.roles('database')
 def restart():
     """Restart the database component."""
-    raise NotImplementedError
+    utils.supervisorctl(command='restart', service='zeoserver')
 
 
 @api.task
