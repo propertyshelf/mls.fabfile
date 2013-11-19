@@ -1,10 +1,11 @@
 Changelog
 =========
 
-0.2 (unreleased)
+0.2 (2013-11-19)
 ----------------
 
-- No changes yet.
+- Set custom hostname for development environment so chef search works.
+- Enabled data upload (Data.fs and blobs).
 
 
 0.1.1 (2013-11-19)
