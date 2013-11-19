@@ -48,7 +48,7 @@ def check():
 
 @api.task
 def create_missing():
-    """"""
+    """Create missing roles on the chef server."""
     chef_api = autoconfigure()
     required = _required_roles()
     domain = api.env.get('domain', 'example.com')
