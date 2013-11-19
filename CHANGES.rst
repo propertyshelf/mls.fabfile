@@ -1,8 +1,13 @@
 Changelog
 =========
 
-0.1-dev (unreleased)
---------------------
+0.1 (2013-11-19)
+----------------
 
-- Package created using templer
-  [Thomas Massmann]
+- Work with development, staging and production environments.
+- Check for chef roles and create missing ones from configurations.
+- Bootstrap MLS systems.
+- Remove MLS clients if not needed any more.
+- Manage database, frontend and worker components.
+- Update client buildout packages.
+- Download database files for local testing.
