@@ -106,7 +106,26 @@ def upload_data():
 @api.roles('database')
 def upload_zodb():
     """Upload ZODB part of Zope's data to the server."""
-    raise NotImplementedError
+    config = utils.mls_config()
+    folder = config.get('zeo', {}).get('dir') or err('Folder must be set!')
+    user = config.get('user') or err('MLS user must be set!')
+
+    if not confirm('This will overwrite your remote Data.fs. Are you sure you '
+                   'want to continue?', default=False):
+        api.abort('ZODB upload cancelled.')
+
+    api.put('var/filestorage/Data.fs', '/tmp/Data.fs.upload')
+    api.sudo('chown %s /tmp/Data.fs.upload' % user)
+
+    utils.supervisorctl(command='stop', service='zeoserver')
+    with api.settings(sudo_user=user):
+        with api.cd(folder):
+            # Backup current Data.fs.
+            if exists('var/filestorage/Data.fs'):
+                api.sudo('mv var/filestorage/Data.fs var/filestorage/Data.fs.bak')
+            api.sudo('mv /tmp/Data.fs.upload var/filestorage/Data.fs')
+
+    utils.supervisorctl(command='start', service='zeoserver')
 
 
 @api.task
