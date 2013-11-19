@@ -104,7 +104,7 @@ def upload_data():
 
 @api.task
 @api.roles('database')
-def upload_zodb():
+def upload_zodb(start_when_done=True):
     """Upload ZODB part of Zope's data to the server."""
     config = utils.mls_config()
     folder = config.get('zeo', {}).get('dir') or err('Folder must be set!')
@@ -127,12 +127,13 @@ def upload_zodb():
                 api.sudo('mv var/filestorage/Data.fs var/filestorage/Data.fs.bak')
             api.sudo('mv /tmp/upload/Data.fs var/filestorage/Data.fs')
 
-    utils.supervisorctl(command='start', service='zeoserver')
+    if start_when_done:
+        utils.supervisorctl(command='start', service='zeoserver')
 
 
 @api.task
 @api.roles('database')
-def upload_blob():
+def upload_blob(start_when_done=True):
     """Upload blob part of Zope's data to the server."""
     config = utils.mls_config()
     folder = config.get('zeo', {}).get('dir') or err('Folder must be set!')
@@ -160,7 +161,8 @@ def upload_blob():
                 api.sudo('mv var/blobstorage var/blobstorage_bak')
             api.sudo('mv /tmp/upload/blobstorage var')
 
-    utils.supervisorctl(command='start', service='zeoserver')
+    if start_when_done:
+        utils.supervisorctl(command='start', service='zeoserver')
 
 
 @api.task
