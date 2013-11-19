@@ -229,6 +229,47 @@ We also support download of the database files for local testing::
     Done.
     Disconnecting from x.x.x.x... done.
 
+Once we have local data files, we can upload them to our development environment
+(a vagrant VM)::
+
+    $ fab development database.upload_data client.restart
+    [localhost] local: vagrant ssh-config | grep IdentityFile
+    [127.0.0.1:2222] Executing task 'database.upload_data'
+    This will overwrite your remote Data.fs. Are you sure you want to continue? [y/N] y
+    [127.0.0.1:2222] sudo: mkdir -p /tmp/upload
+    [127.0.0.1:2222] put: var/filestorage/Data.fs -> /tmp/upload/Data.fs
+    [127.0.0.1:2222] sudo: chown mls /tmp/upload/Data.fs
+    [127.0.0.1:2222] sudo: supervisorctl stop zeoserver
+    [127.0.0.1:2222] out: zeoserver: stopped
+    [127.0.0.1:2222] out:
+
+    [127.0.0.1:2222] sudo: mv var/filestorage/Data.fs var/filestorage/Data.fs.bak
+    [127.0.0.1:2222] sudo: mv /tmp/upload/Data.fs var/filestorage/Data.fs
+    This will overwrite your remote blob files. Are you sure you want to continue? [y/N] y
+    [127.0.0.1:2222] sudo: mkdir -p /tmp/upload
+    [localhost] local: tar czf blobstorage_upload.tgz blobstorage
+    [127.0.0.1:2222] put: var/blobstorage_upload.tgz -> /tmp/upload/blobstorage.tgz
+    [127.0.0.1:2222] sudo: chown mls /tmp/upload/blobstorage.tgz
+    [127.0.0.1:2222] sudo: tar xzf blobstorage.tgz
+    [127.0.0.1:2222] sudo: supervisorctl stop zeoserver
+    [127.0.0.1:2222] out: zeoserver: ERROR (not running)
+    [127.0.0.1:2222] out:
+
+    [127.0.0.1:2222] sudo: mv var/blobstorage var/blobstorage_bak
+    [127.0.0.1:2222] sudo: mv /tmp/upload/blobstorage var
+    [127.0.0.1:2222] sudo: supervisorctl start zeoserver
+    [127.0.0.1:2222] out: zeoserver: started
+    [127.0.0.1:2222] out:
+
+    [127.0.0.1:2222] Executing task 'client.restart'
+    [127.0.0.1:2222] sudo: supervisorctl restart application
+    [127.0.0.1:2222] out: application: stopped
+    [127.0.0.1:2222] out: application: started
+    [127.0.0.1:2222] out:
+
+
+    Done.
+    Disconnecting from 127.0.0.1:2222... done.
 
 
 .. _`Propertyshelf`: http://propertyshelf.com
