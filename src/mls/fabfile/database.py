@@ -99,7 +99,8 @@ def download_blobs():
 @api.roles('database')
 def upload_data():
     """Upload the database files to the server."""
-    raise NotImplementedError
+    upload_zodb(start_when_done=False)
+    upload_blob()
 
 
 @api.task
