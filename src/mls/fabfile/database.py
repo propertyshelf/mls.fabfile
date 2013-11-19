@@ -134,7 +134,33 @@ def upload_zodb():
 @api.roles('database')
 def upload_blob():
     """Upload blob part of Zope's data to the server."""
-    raise NotImplementedError
+    config = utils.mls_config()
+    folder = config.get('zeo', {}).get('dir') or err('Folder must be set!')
+    user = config.get('user') or err('MLS user must be set!')
+
+    if not confirm('This will overwrite your remote blob files. Are you sure '
+                   'you want to continue?', default=False):
+        api.abort('Blob upload cancelled.')
+
+    api.sudo('mkdir -p /tmp/upload', user=user)
+
+    with api.lcd('var'):
+        api.local('tar czf blobstorage_upload.tgz blobstorage')
+        api.put('blobstorage_upload.tgz', '/tmp/upload/blobstorage.tgz', use_sudo=True)
+
+    api.sudo('chown %s /tmp/upload/blobstorage.tgz' % user)
+    with api.cd('/tmp/upload'):
+        api.sudo('tar xzf blobstorage.tgz', user=user)
+
+    utils.supervisorctl(command='stop', service='zeoserver')
+    with api.settings(sudo_user=user):
+        with api.cd(folder):
+            # Backup current blob files.
+            if exists('var/blobstorage'):
+                api.sudo('mv var/blobstorage var/blobstorage_bak')
+            api.sudo('mv /tmp/upload/blobstorage var')
+
+    utils.supervisorctl(command='start', service='zeoserver')
 
 
 @api.task
