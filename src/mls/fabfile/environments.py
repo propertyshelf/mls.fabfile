@@ -3,6 +3,7 @@
 
 from chef.fabric import chef_roledefs
 from fabric import api
+from mls.fabfile.exceptions import missing_env
 
 __all__ = [
     'development',
@@ -48,6 +49,16 @@ def development():
 
     # Connect to the port-forwarded ssh.
     api.env.hosts = ['127.0.0.1:2222']
+
+
+    nodename = api.env.get('nodename_development')
+    nodename = nodename or api.env.get('nodename_staging')
+    nodename = nodename or missing_env('nodename_staging')
+
+    api.env.hostname = 'vagrant-%(name)s-%(user)s' % {
+        'name': nodename,
+        'user': api.env.local_user,
+    }
 
     # Set role definitions for vagrant.
     api.env.roledefs = {
