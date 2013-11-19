@@ -114,8 +114,10 @@ def upload_zodb():
                    'want to continue?', default=False):
         api.abort('ZODB upload cancelled.')
 
-    api.put('var/filestorage/Data.fs', '/tmp/Data.fs.upload')
-    api.sudo('chown %s /tmp/Data.fs.upload' % user)
+    api.sudo('mkdir -p /tmp/upload', user=user)
+
+    api.put('var/filestorage/Data.fs', '/tmp/upload/Data.fs', use_sudo=True)
+    api.sudo('chown %s /tmp/upload/Data.fs' % user)
 
     utils.supervisorctl(command='stop', service='zeoserver')
     with api.settings(sudo_user=user):
@@ -123,7 +125,7 @@ def upload_zodb():
             # Backup current Data.fs.
             if exists('var/filestorage/Data.fs'):
                 api.sudo('mv var/filestorage/Data.fs var/filestorage/Data.fs.bak')
-            api.sudo('mv /tmp/Data.fs.upload var/filestorage/Data.fs')
+            api.sudo('mv /tmp/upload/Data.fs var/filestorage/Data.fs')
 
     utils.supervisorctl(command='start', service='zeoserver')
 
