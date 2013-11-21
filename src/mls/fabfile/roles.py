@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Manage chef roles."""
 
-from chef import autoconfigure, Role
+from chef import autoconfigure, Role, Search
 from fabric import api
 from fabric.colors import green, red
 from mls.fabfile.exceptions import missing_env
@@ -156,3 +156,20 @@ def create_missing():
             default_attributes=default_attributes,
         )
         print(green('Created role %s') % name)
+
+
+@api.task
+def list_nodes(role_list=None):
+    """List all available nodes with given roles."""
+    if not role_list:
+        role_list = _required_roles().values()
+    else:
+        role_list = role_list.split(';')
+
+    chef_api = autoconfigure()
+    for role in role_list:
+        print('Role: %s' % role)
+        query = 'role:%s' % role
+        for row in Search('node', query, api=chef_api):
+            print('- %s: %s' % (row['name'], row.object['ipaddress']))
+        print

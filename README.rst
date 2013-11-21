@@ -271,6 +271,38 @@ Once we have local data files, we can upload them to our development environment
     Done.
     Disconnecting from 127.0.0.1:2222... done.
 
+We can also get a list of nodes for already defined roles::
+
+    $ fab roles.list_nodes
+    Role: mls_fe
+    - mls-fe: x.x.x.x
+
+    Role: mls_db
+    - mls-db: x.x.x.x
+
+    Role: mls_staging
+    - mls-staging: x.x.x.x
+    - vagrant-mls-staging: 10.0.2.15
+
+    Role: mls_app
+    - mls-app-01: x.x.x.x
+
+
+    Done.
+
+This can be useful if we want to execute a task only for a given node::
+
+    $ fab frontend.restart_nginx:hosts=x.x.x.x
+    [x.x.x.x] Executing task 'frontend.restart_nginx'
+    [x.x.x.x] sudo: /etc/init.d/nginx restart
+    [x.x.x.x] out: sudo password:
+    [x.x.x.x] out: Restarting nginx: nginx.
+    [x.x.x.x] out:
+
+
+    Done.
+    Disconnecting from x.x.x.x... done.
+
 
 .. _`Propertyshelf`: http://propertyshelf.com
 .. _`knife`: http://docs.opscode.com/knife.html
