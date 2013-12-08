@@ -33,3 +33,11 @@ def update():
 def restart():
     """Restart the application client component."""
     utils.supervisorctl(command='restart', service='application')
+
+
+@api.task
+@api.roles('worker')
+def rebuild():
+    """Rebuild the application using buildout."""
+    utils.run_buildout()
+    utils.supervisorctl(command='restart', service='application')
