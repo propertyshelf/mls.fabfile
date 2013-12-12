@@ -25,8 +25,8 @@ def remove():
 def update():
     """Update the client packages."""
     utils.supervisorctl(command='stop', service='application')
-    utils.backup_dev_packages(config=mls_config)
-    utils.run_buildout(config=mls_config)
+    utils.backup_dev_packages(config=mls_config())
+    utils.run_buildout(config=mls_config())
     utils.supervisorctl(command='start', service='application')
 
 
@@ -41,5 +41,5 @@ def restart():
 @api.roles('worker')
 def rebuild():
     """Rebuild the application using buildout."""
-    utils.run_buildout(config=mls_config)
+    utils.run_buildout(config=mls_config())
     utils.supervisorctl(command='restart', service='application')
