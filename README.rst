@@ -52,8 +52,8 @@ under version control::
 
 
 Next, we need a `fabfile.py`. All we need to do is to import `mls.fabfile`
-to make the fabric commands available (note that the environments have to
-be imorted seperat).::
+to make the fabric commands available and the available environments we can
+work with from `propertyshelf.fabfile.common`.::
 
     # -*- coding: utf-8 -*-
     """Sample MLS deployment script."""
@@ -61,7 +61,7 @@ be imorted seperat).::
     from fabric import api
 
     from mls.fabfile import *
-    from mls.fabfile.environments import *
+    from propertyshelf.fabfile.common.environments import *
 
 
     # Definition of role names to be used.

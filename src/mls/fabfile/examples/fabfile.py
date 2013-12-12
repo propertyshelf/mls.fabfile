@@ -4,7 +4,7 @@
 from fabric import api
 
 from mls.fabfile import *
-from mls.fabfile.environments import *
+from propertyshelf.fabfile.common.environments import *
 
 
 # Definition of role names to be used.
