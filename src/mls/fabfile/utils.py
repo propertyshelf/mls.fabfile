@@ -2,7 +2,6 @@
 
 from chef import autoconfigure, Search
 from fabric import api
-from propertyshelf.fabfile.common.exceptions import err
 
 
 def mls_config():
