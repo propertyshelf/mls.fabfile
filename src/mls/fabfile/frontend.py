@@ -2,6 +2,7 @@
 """Manage MLS frontend components like web server, load balancer and cache."""
 
 from fabric import api
+from propertyshelf.fabfile.common import frontend
 
 
 @api.task
@@ -17,18 +18,18 @@ def restart():
 @api.roles('frontend')
 def restart_nginx():
     """Restart the NginX web server component."""
-    api.sudo('/etc/init.d/nginx restart')
+    frontend.restart_nginx()
 
 
 @api.task
 @api.roles('frontend')
 def restart_varnish():
     """Restart the Varnish caching proxy component."""
-    api.sudo('/etc/init.d/varnish restart')
+    frontend.restart_varnish()
 
 
 @api.task
 @api.roles('frontend')
 def restart_haproxy():
     """Restart the HA-Proxy load balancer component."""
-    api.sudo('/etc/init.d/haproxy restart')
+    frontend.restart_haproxy
