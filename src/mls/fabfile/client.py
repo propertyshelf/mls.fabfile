@@ -2,7 +2,8 @@
 """Manage MLS application client components."""
 
 from fabric import api
-from mls.fabfile import rackspace, utils
+from mls.fabfile import utils
+from propertyshelf.fabfile.common import rackspace
 from propertyshelf.fabfile.common.exceptions import missing_env
 
 

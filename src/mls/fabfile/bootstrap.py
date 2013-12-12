@@ -2,7 +2,7 @@
 """Bootstrap new servers."""
 
 from fabric import api
-from mls.fabfile import rackspace
+from propertyshelf.fabfile.common import rackspace
 from propertyshelf.fabfile.common.exceptions import missing_env
 
 
