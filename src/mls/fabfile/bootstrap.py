@@ -3,7 +3,7 @@
 
 from fabric import api
 from mls.fabfile import rackspace
-from mls.fabfile.exceptions import missing_env
+from propertyshelf.fabfile.common.exceptions import missing_env
 
 
 @api.task

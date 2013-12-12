@@ -3,7 +3,7 @@
 
 from chef.fabric import chef_roledefs
 from fabric import api
-from mls.fabfile.exceptions import missing_env
+from propertyshelf.fabfile.common.exceptions import missing_env
 
 __all__ = [
     'development',

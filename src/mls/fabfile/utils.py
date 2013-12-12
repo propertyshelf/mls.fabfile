@@ -3,7 +3,7 @@
 from chef import autoconfigure, Search
 from datetime import datetime
 from fabric import api
-from mls.fabfile.exceptions import err
+from propertyshelf.fabfile.common.exceptions import err
 
 
 def mls_config():

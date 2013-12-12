@@ -4,7 +4,7 @@
 from chef import autoconfigure, Role, Search
 from fabric import api
 from fabric.colors import green, red
-from mls.fabfile.exceptions import missing_env
+from propertyshelf.fabfile.common.exceptions import missing_env
 
 
 def _check_role(role, roles=None):
