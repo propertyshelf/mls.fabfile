@@ -3,14 +3,19 @@
 
 from fabric import api
 from mls.fabfile.utils import mls_config
-from propertyshelf.fabfile.common import zodb
+from propertyshelf.fabfile.common import utils, zodb
+
+
+def zodb_ctl(command=None):
+    """ZODB database control for start/stop/restart."""
+    utils.supervisorctl(command=command, service='zeoserver')
 
 
 @api.task
 @api.roles('database')
 def restart():
     """Restart the database component."""
-    zodb.restart(service='zeoserver')
+    zodb_ctl('restart')
 
 
 @api.task
@@ -39,6 +44,7 @@ def download_blobs():
 def upload_data():
     """Upload the database files to the server."""
     zodb.upload_data(mls_config())
+    zodb_ctl('restart')
 
 
 @api.task
@@ -46,6 +52,7 @@ def upload_data():
 def upload_zodb(start_when_done=True):
     """Upload ZODB part of Zope's data to the server."""
     zodb.upload_zodb(mls_config())
+    zodb_ctl('restart')
 
 
 @api.task
@@ -53,3 +60,4 @@ def upload_zodb(start_when_done=True):
 def upload_blob(start_when_done=True):
     """Upload blob part of Zope's data to the server."""
     zodb.upload_blob(mls_config())
+    zodb_ctl('restart')
