@@ -1,60 +1,27 @@
 # -*- coding: utf-8 -*-
 """Manage chef roles."""
 
-from chef import autoconfigure, Role, Search
+from chef import autoconfigure, Role
 from fabric import api
-from fabric.colors import green, red
-from propertyshelf.fabfile.common.exceptions import missing_env
+from fabric.colors import green
+from propertyshelf.fabfile.common import roles
 
-
-def _check_role(role, roles=None):
-    """Check if a given role is available on the chef server."""
-    if not roles:
-        chef_api = autoconfigure()
-        roles = Role.list(api=chef_api)
-    return role in roles
-
-
-def _required_roles():
-    """Get a list of required roles."""
-    role_database = api.env.get('role_database')
-    role_database = role_database or missing_env('role_database')
-    role_frontend = api.env.get('role_frontend')
-    role_frontend = role_frontend or missing_env('role_frontend')
-    role_staging = api.env.get('role_staging')
-    role_staging = role_staging or missing_env('role_staging')
-    role_worker = api.env.get('role_worker')
-    role_worker = role_worker or missing_env('role_worker')
-
-    return {
-        'role_database': role_database,
-        'role_frontend': role_frontend,
-        'role_staging': role_staging,
-        'role_worker': role_worker,
-    }
 
 @api.task
 def check():
     """Check if the required roles are available."""
-    chef_api = autoconfigure()
-    chef_roles = Role.list(api=chef_api)
-
-    for role in _required_roles().values():
-        if _check_role(role, chef_roles):
-            print(green('Role %s available.') % role)
-        else:
-            print(red('Role %s NOT available.') % role)
+    roles.check_required()
 
 
 @api.task
 def create_missing():
     """Create missing roles on the chef server."""
     chef_api = autoconfigure()
-    required = _required_roles()
+    required = roles.get_required()
     domain = api.env.get('domain', 'example.com')
 
     # Create the role_database.
-    if not _check_role(required.get('role_database')):
+    if not roles.check(required.get('role_database')):
         name = required.get('role_database')
         description = 'ZEO Server for %s.' % domain
         run_list = (
@@ -74,7 +41,7 @@ def create_missing():
         print(green('Created role %s') % name)
 
     # Create the role_frontend.
-    if not _check_role(required.get('role_frontend')):
+    if not roles.check(required.get('role_frontend')):
         name = required.get('role_frontend')
         description = 'Frontend Server for %s.' % domain
         run_list = (
@@ -100,18 +67,19 @@ def create_missing():
         print(green('Created role %s') % name)
 
     # Create the role_worker.
-    if not _check_role(required.get('role_worker')):
+    if not roles.check(required.get('role_worker')):
         name = required.get('role_worker')
         description = 'Application Worker for %s.' % domain
         run_list = (
             "role[mls_application]",
         )
+        policy_on = api.env.get('mls_policy_enabled') and 'true' or 'false'
         default_attributes = {
             'domain': domain,
             'mls': {
                 'customizations': api.env.get('mls_customizations', []),
                 'policy': {
-                    'enabled': api.env.get('mls_policy_enabled') and 'true' or 'false',
+                    'enabled': policy_on,
                     'package': api.env.get('mls_policy_package', ''),
                     'package_url': api.env.get('mls_policy_package_url', ''),
                 },
@@ -129,7 +97,7 @@ def create_missing():
         print(green('Created role %s') % name)
 
     # Create the role_staging.
-    if not _check_role(required.get('role_staging')):
+    if not roles.check(required.get('role_staging')):
         name = required.get('role_staging')
         description = 'Staging system for %s.' % domain
         run_list = (
@@ -161,15 +129,4 @@ def create_missing():
 @api.task
 def list_nodes(role_list=None):
     """List all available nodes with given roles."""
-    if not role_list:
-        role_list = _required_roles().values()
-    else:
-        role_list = role_list.split(';')
-
-    chef_api = autoconfigure()
-    for role in role_list:
-        print('Role: %s' % role)
-        query = 'role:%s' % role
-        for row in Search('node', query, api=chef_api):
-            print('- %s: %s' % (row['name'], row.object['ipaddress']))
-        print
+    roles.list_nodes()
