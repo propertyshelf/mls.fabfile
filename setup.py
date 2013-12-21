@@ -40,8 +40,7 @@ setup(
     install_requires=[
         'setuptools',
         # -*- Extra requirements: -*-
-        'Fabric',
-        'PyChef',
+        'propertyshelf.fabfile.common',
     ],
     entry_points="""
     # -*- Entry points: -*-
