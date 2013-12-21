@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.3 (2013-12-21)
+----------------
+
+- Moved common functionality to propertyshelf.fabfile.common.
+- New tasks: rebuild client, list nodes for roles.
+
+
 0.2 (2013-11-19)
 ----------------
 
