@@ -43,3 +43,11 @@ def rebuild():
     """Rebuild the application using buildout."""
     utils.run_buildout(config=mls_config())
     utils.supervisorctl(command='restart', service='application')
+
+
+@api.task
+@api.roles('database')
+def update_support_client():
+    """Update the maintenance client packages."""
+    utils.backup_dev_packages(config=mls_config(), folder='~/maintenance')
+    utils.run_buildout(config=mls_config(), folder='~/maintenance')
