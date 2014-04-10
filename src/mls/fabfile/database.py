@@ -61,3 +61,10 @@ def upload_blob(start_when_done=True):
     """Upload blob part of Zope's data to the server."""
     zodb.upload_blob(mls_config())
     zodb_ctl('restart')
+
+
+@api.task
+@api.roles('database')
+def snapshot_backup():
+    """Perform a snapshot backup."""
+    zodb.backup(mls_config())
