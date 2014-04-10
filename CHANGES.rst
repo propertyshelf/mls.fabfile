@@ -1,8 +1,11 @@
 Changelog
 =========
 
-0.4 (unreleased)
+0.4 (2014-04-10)
 ----------------
+
+- Added snapshotbackup option for database roles.
+- Ability to update the maintenance client as well.
 
 
 0.3 (2013-12-21)
