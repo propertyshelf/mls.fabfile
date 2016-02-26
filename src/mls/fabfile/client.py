@@ -6,6 +6,7 @@ from mls.fabfile.utils import mls_config
 from propertyshelf.fabfile.common import rackspace
 from propertyshelf.fabfile.common import utils
 from propertyshelf.fabfile.common.exceptions import missing_env
+from time import sleep
 
 
 @api.task
@@ -28,6 +29,7 @@ def update():
     utils.backup_dev_packages(config=mls_config())
     utils.run_buildout(config=mls_config())
     utils.supervisorctl(command='start', service='application')
+    sleep(15)
 
 
 @api.task
@@ -35,6 +37,7 @@ def update():
 def restart():
     """Restart the application client component."""
     utils.supervisorctl(command='restart', service='application')
+    sleep(15)
 
 
 @api.task
